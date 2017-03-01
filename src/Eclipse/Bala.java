@@ -5,57 +5,36 @@ import processing.core.PImage;
 import processing.core.PVector;
 
 public class Bala {
+
 	private PApplet app;
 	private PVector pos;
-	private PImage[] img;
-	private String comando = "";
+	private PVector vel;
+	private PImage img;
+	private int velMax = 6;
 
-	public Bala(PApplet app, PImage[] imagen) {
+	public Bala(PApplet app, PImage img, PVector pos, PVector vel) {
 		this.app = app;
-		this.img = imagen;
-		pos = new PVector(0, 0);
+		this.pos = pos;
+		this.vel = vel;
+		this.img = img;
 	}
 
-	public void mover() {
-		switch (comando) {
-		case "shoot":
-			// DISPARAR
-			break;
-
-		case "right":
-			// MOVER DERECHA
-			break;
-
-		case "left":
-			// MOVER DERECHA
-			break;
-
-		default:
-			if (!comando.equals("")) {
-				System.out.println(comando + " is not a valid command");
-			}
-			break;
-		}
+	public void update() {
+		vel.limit(velMax);
+		pos.add(vel);
 	}
 
-	public void pintar() {
-		app.image(img[0], app.width / 2, (app.height / 2) + 200);
+	public void display() {
+		app.imageMode(PApplet.CENTER);
+		app.image(img, pos.x, pos.y);
+		app.imageMode(PApplet.CORNER);
 	}
 
-	public String getComando() {
-		return comando;
-	}
-
-	public float getPosX() {
+	public float getX() {
 		return pos.x;
 	}
 
-	public float getPosY() {
+	public float getY() {
 		return pos.y;
 	}
-
-	public void setComando(String comando) {
-		this.comando = comando;
-	}
-
 }
