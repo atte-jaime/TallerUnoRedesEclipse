@@ -37,4 +37,12 @@ public class Bala {
 	public float getY() {
 		return pos.y;
 	}
+	
+	public void setX(float x){
+		pos.x=x;
+	}
+	
+	public void setY(float y){
+		pos.y=y;
+	}
 }
