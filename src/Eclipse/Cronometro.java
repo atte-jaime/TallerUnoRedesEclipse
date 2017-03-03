@@ -1,18 +1,29 @@
 package Eclipse;
 
 import processing.core.PApplet;
-
+/**
+ * Clase encargada del manejo del tiempo que hereda de Thread
+ * @author jaime
+ *
+ */
 public class Cronometro extends Thread {
 	private PApplet app;
 	private int millis;
 	private int sec;
 	private int min;
 	private boolean corriendo;
-
+	
+	/**
+	 * Constructor de la clase
+	 * @param app 
+	 */
 	public Cronometro(PApplet app) {
 		this.app = app;
 	}
-
+	
+	/**
+	 * Método utilizado para calcular el tiempo
+	 */
 	public void run() {
 
 		while (true) {
@@ -40,7 +51,9 @@ public class Cronometro extends Thread {
 		}
 
 	}
-
+	
+	//MÉTODOS DE REOTRNO Y SETEO DE LAS VARIABLES
+	
 	public int getMillis() {
 		return millis;
 	}

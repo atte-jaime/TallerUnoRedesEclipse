@@ -2,6 +2,11 @@ package Eclipse;
 
 import processing.core.PApplet;
 
+/**
+ * Clase principal para la ejecución de la aplicación
+ * @author jaime
+ *
+ */
 public class Main extends PApplet{
 
 	public static void main(String[] args) {

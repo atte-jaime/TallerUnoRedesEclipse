@@ -6,12 +6,20 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Observable;
 
+/**
+ * Clase encargada de la lectura de ip's conectadas a una misma red
+ * @author jaime
+ *
+ */
 public class LeerIp extends Observable implements Runnable {
 
 	private InetAddress ip;
 	private String ipTemp;
 	private ArrayList<String> direcciones;
-
+	
+	/**
+	 * Constructor de la clase
+	 */
 	public LeerIp() {
 
 		try {
@@ -26,7 +34,10 @@ public class LeerIp extends Observable implements Runnable {
 
 	}
 
-	@Override
+	/**
+	 * Método encargado de la lectura de ip' para determinar si es accesible o no
+	 * Además, notifica a la lógica cuando encuentra una ip nueva que es Reachable y envía la ip por medio de un string
+	 */
 	public void run() {
 		boolean nuevo = false;
 

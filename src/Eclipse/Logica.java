@@ -10,6 +10,13 @@ import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
 
+/**
+ * Esta clase define la interacción de toda la aplicación
+ * 
+ * @author jaime
+ * 
+ */
+
 public class Logica implements Observer {
 
 	private PApplet app;
@@ -30,6 +37,12 @@ public class Logica implements Observer {
 	private PFont fuente;
 	private PImage finish;
 
+	/**
+	 * Constructor de la clase logica
+	 * 
+	 * @param app
+	 *            Permite utilizar la librería de processing para dibujar
+	 */
 	public Logica(PApplet app) {
 		this.app = app;
 		cargarImagenes();
@@ -53,14 +66,24 @@ public class Logica implements Observer {
 
 	}
 
+	/**
+	 * Método que se encarga de recibir información de las clases que observa,
+	 * en este caso, son la Comunicación y LecturaIp Leer la información y
+	 * determina cuál es su función en la aplicación
+	 * 
+	 */
 	public void update(Observable clase, Object obj) {
+
+		// Si los datos que recibe son provenientes de la clase Comunicación
 		if (clase instanceof Comunicacion) {
 			if (obj instanceof String) {
 				String pos = (String) obj;
 				if (pos.contains("right")) {
 					if (pantallas < 2) {
+						//Cambio de pantalla hacia adelante
 						pantallas += 1;
 						if (pantallas == 2) {
+							// Comienza a correr el tiempo
 							crono.setCorriendo(true);
 						}
 						System.out.println("Se cambió de pantalla a: " + pantallas);
@@ -71,6 +94,7 @@ public class Logica implements Observer {
 					}
 				} else if (pos.contains("left")) {
 					if (pantallas != 2 && pantallas >= 1 && pantallas != 3) {
+						//Cambio de pantallas hacia atrás
 						pantallas -= 1;
 						System.out.println("Se cambió de pantalla a: " + pantallas);
 
@@ -92,7 +116,10 @@ public class Logica implements Observer {
 				else
 					System.out.println("El comando es erróneo :v");
 			}
-		} else if (clase instanceof LeerIp) {
+		}
+		
+		// Si los datos que recibe son provenientes de la clase LeerIp
+		else if (clase instanceof LeerIp) {
 			// OBTENER IP'S Y CREAR ENEMIGOS :v
 			String hostAdress = (String) obj;
 			try {
@@ -106,12 +133,19 @@ public class Logica implements Observer {
 		}
 
 	}
-
+	
+	/**
+	 * 
+	 * Método que se encarga de ejecutar todo el código
+	 */
 	public void ejecutar() {
 		user.pintar();
 		pantallas();
 	}
-
+	
+	/**
+	 * Método que se encarga de la distribución y pintado de las pantallas
+	 */
 	private void pantallas() {
 		switch (pantallas) {
 		case 0:
@@ -145,7 +179,7 @@ public class Logica implements Observer {
 			app.textAlign(PApplet.CENTER, PApplet.CENTER);
 			app.fill(255);
 			app.textSize(40);
-			app.text("x " + puntaje, (app.width/2)+70, app.height/2);
+			app.text("x " + puntaje, (app.width / 2) + 70, app.height / 2);
 			app.noFill();
 
 			break;
@@ -154,7 +188,10 @@ public class Logica implements Observer {
 			break;
 		}
 	}
-
+	
+	/**
+	 * Método encargado de cargar TODAS las imágenes que se utilizan en la APP
+	 */
 	private void cargarImagenes() {
 		interfaz = new PImage[2];
 		cañonI = new PImage[2];
@@ -177,7 +214,10 @@ public class Logica implements Observer {
 		pajaro = app.loadImage("../Data/Interaccion/pajaro.png");
 		tiempo = app.loadImage("../Data/Interaccion/tiempoYpuntaje.png");
 	}
-
+	
+	/**
+	 * Método encargado de la animación de fondo de la interacción
+	 */
 	private void animacionJuego() {
 
 		if (contador == 300) {
@@ -193,7 +233,11 @@ public class Logica implements Observer {
 		app.rect(0, 0, app.width, app.height);
 		app.noFill();
 	}
-
+	
+	/**
+	 * Metodo encargado del cálculo de tiempo y su pintado
+	 * Además, también determina las acciones cuando el tiempo llega a tal punto
+	 */
 	private void tiempoYpuntaje() {
 		int min = crono.getMin();
 		int sec = crono.getSec();
@@ -211,9 +255,12 @@ public class Logica implements Observer {
 		app.noFill();
 
 	}
-
+	
+	/**
+	 * Metodo encargado de reiniciar todas las variables del juego
+	 */
 	private void reset() {
-		pantallas=0;
+		pantallas = 0;
 		pajaros.removeAll(pajaros);
 		puntaje = 0;
 		crono.setMillis(0);
