@@ -7,6 +7,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import processing.core.PApplet;
+import processing.core.PFont;
 import processing.core.PImage;
 
 public class Logica implements Observer {
@@ -18,15 +19,28 @@ public class Logica implements Observer {
 	private PImage[] interfaz;
 	private PImage[] animacion;
 	private PImage pajaro;
+	private PImage tiempo;
+
 	private Comunicacion com;
-	private int pantallas = 2;
+	private int pantallas = 0;
 	private int contador;
+	private int puntaje;
 	private ArrayList<Pajaro> pajaros;
+	private Cronometro crono;
+	private PFont fuente;
+	private PImage finish;
 
 	public Logica(PApplet app) {
 		this.app = app;
 		cargarImagenes();
 
+		// The font must be located in the sketch's
+		// "data" directory to load successfully
+		fuente = app.createFont("../Data/Fonts/CHANGA ONE REGULAR.TTF", 18);
+		app.textFont(fuente, 18);
+
+		crono = new Cronometro(app);
+		crono.start();
 		user = new Usuario(app, cañonI);
 		pajaros = new ArrayList<Pajaro>();
 		ipes = new LeerIp();
@@ -44,8 +58,11 @@ public class Logica implements Observer {
 			if (obj instanceof String) {
 				String pos = (String) obj;
 				if (pos.contains("right")) {
-					if (pantallas != 2) {
+					if (pantallas < 2) {
 						pantallas += 1;
+						if (pantallas == 2) {
+							crono.setCorriendo(true);
+						}
 						System.out.println("Se cambió de pantalla a: " + pantallas);
 					} else {
 						// Mueve la bala a la derecha
@@ -53,7 +70,7 @@ public class Logica implements Observer {
 						user.derecha();
 					}
 				} else if (pos.contains("left")) {
-					if (pantallas != 2 && pantallas >= 1) {
+					if (pantallas != 2 && pantallas >= 1 && pantallas != 3) {
 						pantallas -= 1;
 						System.out.println("Se cambió de pantalla a: " + pantallas);
 
@@ -66,6 +83,10 @@ public class Logica implements Observer {
 				else if (pos.contains("shoot") && pantallas == 2) {
 					// Disparar
 					user.disparar();
+				}
+
+				else if (pos.contains("shoot") && pantallas == 3) {
+					reset();
 				}
 
 				else
@@ -101,7 +122,6 @@ public class Logica implements Observer {
 			break;
 		case 2:
 			animacionJuego();
-			user.pintar();
 			for (int i = 0; i < pajaros.size(); i++) {
 				Pajaro temp = pajaros.get(i);
 				temp.mover();
@@ -111,8 +131,23 @@ public class Logica implements Observer {
 				int yTemp = temp.getPosY();
 				if (user.choque(xTemp, yTemp)) {
 					pajaros.remove(temp);
+					puntaje += 1;
 				}
 			}
+			user.pintar();
+			tiempoYpuntaje();
+
+			break;
+
+		case 3:
+			// PANTALLA DE FINALIZAR Y REINICIAR
+			app.image(finish, 0, 0);
+			app.textAlign(PApplet.CENTER, PApplet.CENTER);
+			app.fill(255);
+			app.textSize(40);
+			app.text("x " + puntaje, (app.width/2)+70, app.height/2);
+			app.noFill();
+
 			break;
 
 		default:
@@ -125,6 +160,8 @@ public class Logica implements Observer {
 		cañonI = new PImage[2];
 		animacion = new PImage[300];
 		pajaro = new PImage();
+		tiempo = new PImage();
+		finish = new PImage();
 
 		for (int i = 0; i < animacion.length; i++) {
 			animacion[i] = app.loadImage("../Data/Animacion/animInterfaz_" + i + ".png");
@@ -132,11 +169,13 @@ public class Logica implements Observer {
 
 		interfaz[0] = app.loadImage("../Data/Interfaz/inicio.png");
 		interfaz[1] = app.loadImage("../Data/Interfaz/instrucciones.png");
+		finish = app.loadImage("../Data/Interfaz/finish.png");
 
 		cañonI[0] = app.loadImage("../Data/Interaccion/cañon.png");
 		cañonI[1] = app.loadImage("../Data/Interaccion/bala.png");
 
 		pajaro = app.loadImage("../Data/Interaccion/pajaro.png");
+		tiempo = app.loadImage("../Data/Interaccion/tiempoYpuntaje.png");
 	}
 
 	private void animacionJuego() {
@@ -155,8 +194,31 @@ public class Logica implements Observer {
 		app.noFill();
 	}
 
-	private void tiempo() {
-		 
+	private void tiempoYpuntaje() {
+		int min = crono.getMin();
+		int sec = crono.getSec();
+
+		if (min >= 1) {
+			pantallas = 3;
+			crono.setCorriendo(false);
+		}
+		app.image(tiempo, 0, 0);
+		app.textAlign(PApplet.CENTER, PApplet.CENTER);
+		app.fill(255);
+		app.textSize(18);
+		app.text("x " + puntaje, 82, 35);
+		app.text(min + ":" + sec, 433, 35);
+		app.noFill();
+
+	}
+
+	private void reset() {
+		pantallas=0;
+		pajaros.removeAll(pajaros);
+		puntaje = 0;
+		crono.setMillis(0);
+		crono.setMin(0);
+		crono.setSec(0);
 	}
 
 }

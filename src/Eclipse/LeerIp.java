@@ -31,12 +31,12 @@ public class LeerIp extends Observable implements Runnable {
 		boolean nuevo = false;
 
 		while (true) {
-			for (int i = 2; i < 50; i++) {
+			for (int i = 2; i < 55; i++) {
 				String host = ipTemp + "." + i;
 
 				try {
 					InetAddress adress2 = InetAddress.getByName(host);
-					if (adress2.isReachable(10)) {
+					if (adress2.isReachable(350)) {
 						System.out.println(adress2 + " is Reachable");
 
 						nuevo = true;

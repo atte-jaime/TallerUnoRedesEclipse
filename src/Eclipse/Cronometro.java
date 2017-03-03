@@ -2,54 +2,75 @@ package Eclipse;
 
 import processing.core.PApplet;
 
-public class Cronometro {
-	
-	/*
-	 * CÛdigo proporcionado y creado por Camilo Montoya
-	 */
-	
-	
-	// Objeto para contabilizar tiempo y que no se vea afectado por un	frame rate
-	// Declaraci√≥n de las variables que ejecutaran el tiempo
-	int comenzar = 0, parar = 0;
-	boolean reproducir = false;
-	
-	PApplet app;
-	public Cronometro(PApplet app){
-		this.app=app;
+public class Cronometro extends Thread {
+	private PApplet app;
+	private int millis;
+	private int sec;
+	private int min;
+	private boolean corriendo;
+
+	public Cronometro(PApplet app) {
+		this.app = app;
 	}
 
-	// Si el reloj comienza
-	public void empezar() {
-		comenzar = app.millis();
-		reproducir = true;
-	}
+	public void run() {
 
-	// Si el reloj se detiene
-	public void detener() {
-		parar = app.millis();
-		reproducir = false;
-	}
+		while (true) {
+			if (corriendo) {
 
-	// Reproducira el tiempo que se este pasando
-	public int timepoReproducido() {
-		int tiempo;
-		if (reproducir) {
-			tiempo = (app.millis() - comenzar);
-		} else {
-			tiempo = (parar - comenzar);
+				millis++;
+
+				if (millis / 1000 == 1) {
+					sec += 1;
+					millis = 0;
+				} else
+
+				if (sec / 60 == 1) {
+					min += 1;
+					sec = 0;
+				}
+			}
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		}
-		return tiempo;
+
 	}
 
-	// Retorna los segundos reproducidos
-	public int second() {
-		return (timepoReproducido() / 1000) % 60;
+	public int getMillis() {
+		return millis;
 	}
 
-	// Retorna los minutos reproducidos
-	public int minute() {
-		return (timepoReproducido() / (1000 * 60)) % 60;
+	public int getSec() {
+		return sec;
 	}
+
+	public int getMin() {
+		return min;
+	}
+
+	public boolean isCorriendo() {
+		return corriendo;
+	}
+
+	public void setMillis(int millis) {
+		this.millis = millis;
+	}
+
+	public void setSec(int sec) {
+		this.sec = sec;
+	}
+
+	public void setMin(int min) {
+		this.min = min;
+	}
+
+	public void setCorriendo(boolean corriendo) {
+		this.corriendo = corriendo;
+	}
+
 }
-

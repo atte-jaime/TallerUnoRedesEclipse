@@ -42,8 +42,10 @@ public class Usuario {
 		app.imageMode(PApplet.CORNER);
 		app.popMatrix();
 		app.fill(0);
-		app.ellipse(base.x, base.y, 30, 30);
-		app.ellipse(posObjetivo.x, posObjetivo.y, 20, 20);
+		// REFERENCIA DE BASE
+		//app.ellipse(base.x, base.y, 30, 30);
+		// REFERENCIA DE TIRO
+		//app.ellipse(posObjetivo.x, posObjetivo.y, 20, 20);
 	}
 
 	public void derecha() {
