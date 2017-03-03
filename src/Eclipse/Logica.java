@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+import ddf.minim.AudioPlayer;
+import ddf.minim.Minim;
 import processing.core.PApplet;
 import processing.core.PFont;
 import processing.core.PImage;
@@ -35,6 +37,8 @@ public class Logica implements Observer {
 	private ArrayList<Pajaro> pajaros;
 	private Cronometro crono;
 	private PFont fuente;
+	private Minim minim;
+	private AudioPlayer fondo;
 	private PImage finish;
 
 	/**
@@ -45,10 +49,10 @@ public class Logica implements Observer {
 	 */
 	public Logica(PApplet app) {
 		this.app = app;
+		minim = new Minim(app);
+		fondo = minim.loadFile("../data/Sonidos/fondo.mp3");
 		cargarImagenes();
-
-		// The font must be located in the sketch's
-		// "data" directory to load successfully
+		fondo.loop();
 		fuente = app.createFont("../Data/Fonts/CHANGA ONE REGULAR.TTF", 18);
 		app.textFont(fuente, 18);
 
@@ -80,7 +84,7 @@ public class Logica implements Observer {
 				String pos = (String) obj;
 				if (pos.contains("right")) {
 					if (pantallas < 2) {
-						//Cambio de pantalla hacia adelante
+						// Cambio de pantalla hacia adelante
 						pantallas += 1;
 						if (pantallas == 2) {
 							// Comienza a correr el tiempo
@@ -94,7 +98,7 @@ public class Logica implements Observer {
 					}
 				} else if (pos.contains("left")) {
 					if (pantallas != 2 && pantallas >= 1 && pantallas != 3) {
-						//Cambio de pantallas hacia atrás
+						// Cambio de pantallas hacia atrás
 						pantallas -= 1;
 						System.out.println("Se cambió de pantalla a: " + pantallas);
 
@@ -117,7 +121,7 @@ public class Logica implements Observer {
 					System.out.println("El comando es erróneo :v");
 			}
 		}
-		
+
 		// Si los datos que recibe son provenientes de la clase LeerIp
 		else if (clase instanceof LeerIp) {
 			// OBTENER IP'S Y CREAR ENEMIGOS :v
@@ -133,16 +137,17 @@ public class Logica implements Observer {
 		}
 
 	}
-	
+
 	/**
 	 * 
 	 * Método que se encarga de ejecutar todo el código
 	 */
 	public void ejecutar() {
+		sonidoFondo();
 		user.pintar();
 		pantallas();
 	}
-	
+
 	/**
 	 * Método que se encarga de la distribución y pintado de las pantallas
 	 */
@@ -188,7 +193,7 @@ public class Logica implements Observer {
 			break;
 		}
 	}
-	
+
 	/**
 	 * Método encargado de cargar TODAS las imágenes que se utilizan en la APP
 	 */
@@ -214,7 +219,7 @@ public class Logica implements Observer {
 		pajaro = app.loadImage("../Data/Interaccion/pajaro.png");
 		tiempo = app.loadImage("../Data/Interaccion/tiempoYpuntaje.png");
 	}
-	
+
 	/**
 	 * Método encargado de la animación de fondo de la interacción
 	 */
@@ -233,10 +238,10 @@ public class Logica implements Observer {
 		app.rect(0, 0, app.width, app.height);
 		app.noFill();
 	}
-	
+
 	/**
-	 * Metodo encargado del cálculo de tiempo y su pintado
-	 * Además, también determina las acciones cuando el tiempo llega a tal punto
+	 * Metodo encargado del cálculo de tiempo y su pintado Además, también
+	 * determina las acciones cuando el tiempo llega a tal punto
 	 */
 	private void tiempoYpuntaje() {
 		int min = crono.getMin();
@@ -255,7 +260,7 @@ public class Logica implements Observer {
 		app.noFill();
 
 	}
-	
+
 	/**
 	 * Metodo encargado de reiniciar todas las variables del juego
 	 */
@@ -266,6 +271,17 @@ public class Logica implements Observer {
 		crono.setMillis(0);
 		crono.setMin(0);
 		crono.setSec(0);
+	}
+
+	/**
+	 * Método que se encarga de la música de fondo
+	 */
+	public void sonidoFondo() {
+		if (fondo.position() >= fondo.length()) {
+			fondo.rewind();
+		}
+
+
 	}
 
 }
